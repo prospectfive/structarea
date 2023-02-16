@@ -1,7 +1,7 @@
 {
   "name": "@prospectfive/structarea",
   "description": "Like a <textarea /> for structured data, I guess.",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "author": "github.com/prospectfive",
   "private": false,
   "exports": {
