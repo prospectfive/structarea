@@ -10,3 +10,5 @@ export default {
   whatIsThis,
   whyIsThis,
 }
+
+export * from './components/StructArea';
