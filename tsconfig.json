@@ -11,5 +11,5 @@
     "allowSyntheticDefaultImports": true,
     "jsx": "react"
   },
-  "files": ["../src/index.ts"]
+  "files": ["./src/index.ts"]
 }
