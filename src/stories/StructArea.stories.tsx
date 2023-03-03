@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-// import { storiesOf } from '@storybook/react'
 import { ComponentMeta, ComponentStory } from '@storybook/react'
-import { StructArea } from '../components/StructArea'
+import StructArea from '../components/StructArea'
 
 export default {
   title: 'StructArea',
