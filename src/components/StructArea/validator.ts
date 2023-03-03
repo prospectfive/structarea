@@ -9,6 +9,10 @@ interface ValidationError {
   message?: string;
 }
 
+interface ValidationObject {
+  [key: string]: any
+}
+
 export function validateJSON(rawJSON: string, expectedStruct: object): ValidationError | null {
   try {
     const parsedJSON = JSON.parse(rawJSON)
@@ -48,7 +52,7 @@ function validateExpectedStructure(json: any, expected: object, keyPath: string 
 }
 
 function validateArrayStructure(arr: any, expected: object, keyPath: string): string | null {
-  if (!expected[0]) {
+  if (!Array.isArray(expected)) {
     return `Key at "${keyPath}0": expecting <${typeof expected}>, got <array>`
   }
   if (!arr.length) {
@@ -58,7 +62,6 @@ function validateArrayStructure(arr: any, expected: object, keyPath: string): st
   for (const idx in arr) {
     const arrType = typeof arr[idx]
     const newKeyPath = `${keyPath}${idx}.`
-    console.log(newKeyPath, arrType, expectedType)
     if (arrType !== expectedType) {
       return `Key at "${newKeyPath}": expected <${expectedType}>, got <${arrType}>`
     }
@@ -72,7 +75,7 @@ function validateArrayStructure(arr: any, expected: object, keyPath: string): st
   return null
 }
 
-function validateObjectStructure(obj: object, expected: object, keyPath: string): string | null {
+function validateObjectStructure(obj: ValidationObject, expected: ValidationObject, keyPath: string): string | null {
   if (typeof obj === 'object'){
     for (const key in obj) {
       if (!expected.hasOwnProperty(key)) {

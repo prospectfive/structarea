@@ -1,3 +1,3 @@
-import StructArea from './components/StructArea';
+import { StructArea } from './StructArea';
 export default StructArea;
 //# sourceMappingURL=index.d.ts.map

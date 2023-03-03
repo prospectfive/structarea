@@ -1,8 +1,3 @@
-export declare function whatIsThis(): string;
-export declare function whyIsThis(): string;
-declare const _default: {
-    whatIsThis: typeof whatIsThis;
-    whyIsThis: typeof whyIsThis;
-};
-export default _default;
+import StructArea from './components/StructArea';
+export default StructArea;
 //# sourceMappingURL=index.d.ts.map

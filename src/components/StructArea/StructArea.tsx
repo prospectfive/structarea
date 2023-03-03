@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { validateJSON } from './validator'
 
-const KEYCODE_TAB = 9
-const KEYCODE_ENTER = 13
+const KEY_TAB = 'Tab'
+const KEY_ENTER = 'Enter'
 
 interface StructAreaProps {
   /**Required: the underlying textarea's value, should be tracked in state by your app */
@@ -55,7 +55,9 @@ const formatJSON = (s: string): string => {
     .replace(/\n/g, '\r\n')
 }
 
-export const StructArea: (props: StructAreaProps) => React.Node = (props) => {
+export const StructArea: React.FC<StructAreaProps> = (
+  props: StructAreaProps
+) => {
   const cursor = useRef<HTMLTextAreaElement>(null)
 
   const [position, setPosition] = useState(0)
@@ -74,7 +76,7 @@ export const StructArea: (props: StructAreaProps) => React.Node = (props) => {
       if (!result?.error && props.autoFormat) {
         props.onChange({
           target: { value: formatJSON(props.value) },
-        } as React.ChangeEvent)
+        } as React.ChangeEvent<HTMLTextAreaElement>)
       }
     }, props.validationDelay || 500)
 
@@ -82,19 +84,22 @@ export const StructArea: (props: StructAreaProps) => React.Node = (props) => {
   }, [props.value])
 
   useEffect(() => {
-    cursor.current.selectionStart = cursor.current.selectionEnd = position
+    if (cursor?.current) {
+      cursor.current.selectionStart = cursor.current.selectionEnd = position
+    }
   }, [position])
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // TODO: do something different when text is highlighted, tab by line instead?
     // if (window.getSelection()?.toString()) {
     //   console.log(window.getSelection()?.toString())
     //   return
     // }
 
-    const { selectionStart, selectionEnd, value } = e.target
+    const { selectionStart, selectionEnd, value } =
+      e.target as HTMLTextAreaElement
 
-    if (e.keyCode === KEYCODE_ENTER) {
+    if (e.key === KEY_ENTER) {
       e.preventDefault()
       const prevChar = value.charAt(selectionStart - 1)
       let indent = 0
@@ -122,7 +127,10 @@ export const StructArea: (props: StructAreaProps) => React.Node = (props) => {
           value.substring(selectionEnd)
       }
       setPosition(selectionStart + indent + 1)
-      props.onChange({ ...e, target: { ...e.target, value: newContent } })
+      props.onChange({
+        ...e,
+        target: { ...e.target, value: newContent } as HTMLTextAreaElement,
+      })
     }
 
     if (e.key === '{' || e.key === '[') {
@@ -135,12 +143,15 @@ export const StructArea: (props: StructAreaProps) => React.Node = (props) => {
           bracket +
           value.slice(selectionEnd)
 
-        props.onChange({ ...e, target: { ...e.target, value: newContent } })
+        props.onChange({
+          ...e,
+          target: { ...e.target, value: newContent } as HTMLTextAreaElement,
+        })
         setPosition(selectionStart + 1)
       }
     }
 
-    if (e.shiftKey && e.keyCode === KEYCODE_TAB) {
+    if (e.shiftKey && e.key === KEY_TAB) {
       e.preventDefault()
       const before = value
         .substring(0, selectionStart)
@@ -160,16 +171,22 @@ export const StructArea: (props: StructAreaProps) => React.Node = (props) => {
           before.substring(0, tabIdx).split('').reverse().join('') +
           value.substring(selectionEnd)
         setPosition(selectionStart - 2) // go backwards 2 because we removed 2 spaces
-        props.onChange({ ...e, target: { ...e.target, value: newContent } })
+        props.onChange({
+          ...e,
+          target: { ...e.target, value: newContent } as HTMLTextAreaElement,
+        })
       }
-    } else if (e.keyCode === KEYCODE_TAB) {
+    } else if (e.key === KEY_TAB) {
       e.preventDefault()
       const newContent =
         value.substring(0, selectionStart) +
         '  ' +
         value.substring(selectionEnd)
       setPosition(selectionStart + 2) // forward 2 because we added 2 spaces
-      props.onChange({ ...e, target: { ...e.target, value: newContent } })
+      props.onChange({
+        ...e,
+        target: { ...e.target, value: newContent } as HTMLTextAreaElement,
+      })
     }
   }
 
